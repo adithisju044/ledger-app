@@ -1,0 +1,145 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #eef2f7;
+}
+
+.app {
+  max-width: 430px;
+  margin: auto;
+  min-height: 100vh;
+  background: #f8fafc;
+  padding-bottom: 80px;
+}
+
+header {
+  background: #2563eb;
+  color: white;
+  padding: 16px;
+  text-align: center;
+}
+
+.screen {
+  display: none;
+  padding: 16px;
+}
+
+.screen.active {
+  display: block;
+}
+
+.summary-card {
+  background: #2563eb;
+  color: white;
+  padding: 20px;
+  border-radius: 18px;
+  margin-bottom: 15px;
+}
+
+.summary-card p,
+.summary-card h1 {
+  margin: 0;
+}
+
+.summary-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.summary-row div,
+.transaction,
+.contact-card {
+  background: white;
+  padding: 14px;
+  border-radius: 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+input, select, button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  font-weight: bold;
+}
+
+.credit {
+  color: green;
+  font-weight: bold;
+}
+
+.debit {
+  color: red;
+  font-weight: bold;
+}
+
+.small {
+  color: gray;
+  font-size: 13px;
+}
+
+nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 430px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: white;
+  border-top: 1px solid #ddd;
+}
+
+nav button {
+  background: white;
+  color: #333;
+  border-radius: 0;
+  margin: 0;
+  font-size: 13px;
+}
+.contact-card {
+    background: white;
+    padding: 15px;
+    border-radius: 14px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    cursor: pointer;
+}
+
+.contact-card strong {
+    display: block;
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+function editTransaction(id) {
+  let transaction = transactions.find(t => t.id === id);
+
+  if (!transaction) {
+    alert("Transaction not found");
+    return;
+  }
+
+  editId = id;
+
+  document.getElementById("date").value = transaction.date;
+  document.getElementById("type").value = transaction.type;
+  document.getElementById("amount").value = transaction.amount;
+  document.getElementById("paymentMode").value = transaction.paymentMode;
+  document.getElementById("notes").value = transaction.notes;
+
+  document.getElementById("personSelect").value = transaction.person;
+  document.getElementById("newPerson").value = "";
+
+  showScreen("add");
+}

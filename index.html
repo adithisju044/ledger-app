@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Ledger App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <header>
+    <h2>My Ledger</h2>
+  </header>
+
+  <section id="home" class="screen active">
+    <h3>Home</h3>
+
+    <div class="summary-card">
+      <p>Net Balance</p>
+      <h1 id="netBalance">₹0</h1>
+    </div>
+
+    <div class="summary-row">
+      <div>
+        <p>Total Credit</p>
+        <h3 id="totalCredit">₹0</h3>
+      </div>
+      <div>
+        <p>Total Debit</p>
+        <h3 id="totalDebit">₹0</h3>
+      </div>
+    </div>
+
+    <h3>Recent Transactions</h3>
+    <div id="recentTransactions"></div>
+  </section>
+
+  <section id="add" class="screen">
+    <h3>Add Transaction</h3>
+
+    <input type="date" id="date">
+
+    <select id="type">
+      <option value="Credit">Money In / Credit</option>
+      <option value="Debit">Money Out / Debit</option>
+    </select>
+
+    <input type="number" id="amount" placeholder="Amount">
+
+    <select id="personSelect">
+      <option value="">Select contact</option>
+    </select>
+
+    <input type="text" id="newPerson" placeholder="Or type new person name">
+
+    <select id="paymentMode">
+      <option value="Cash">Cash</option>
+      <option value="GPay">GPay</option>
+      <option value="PhonePe">PhonePe</option>
+      <option value="Paytm">Paytm</option>
+      <option value="Bank Transfer">Bank Transfer</option>
+      <option value="UPI">UPI</option>
+      <option value="Card">Card</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <input type="text" id="notes" placeholder="Notes optional">
+
+    <button onclick="addTransaction()">Save Transaction</button>
+  </section>
+
+  <section id="history" class="screen">
+    <h3>History</h3>
+    <input type="text" id="search" placeholder="Search person..." onkeyup="displayTransactions()">
+    <div id="transactionList"></div>
+  </section>
+
+  <section id="contacts" class="screen">
+    <h3>Contacts</h3>
+
+    <input type="text" id="contactName" placeholder="Person name">
+
+    <input type="text" id="contactPhone" placeholder="Phone number optional">
+
+    <input type="number" id="openingCredit" placeholder="Opening Credit Balance - They owe me">
+
+    <input type="number" id="openingDebit" placeholder="Opening Debit Balance - I owe them">
+
+<select id="contactType">
+  <option value="Customer">Customer</option>
+  <option value="Supplier">Supplier</option>
+  <option value="Friend">Friend</option>
+  <option value="Family">Family</option>
+  <option value="Other">Other</option>
+</select>
+
+<button onclick="addContact()">Add Contact</button>
+
+    <div id="contactList"></div>
+  </section>
+<section id="personLedger" class="screen">
+  <button onclick="showScreen('contacts')">← Back</button>
+
+  <h3 id="ledgerPersonName">Person Ledger</h3>
+
+  <div class="summary-row">
+    <div>
+      <p>Total Credit</p>
+      <h3 id="personCredit">₹0</h3>
+    </div>
+    <div>
+      <p>Total Debit</p>
+      <h3 id="personDebit">₹0</h3>
+    </div>
+  </div>
+
+  <div class="summary-card">
+    <p>Net Balance</p>
+    <h1 id="personNet">₹0</h1>
+  </div>
+
+  <h3>Transactions</h3>
+  <div id="personTransactions"></div>
+</section>
+<section id="outstanding" class="screen">
+    <h3>Outstanding Summary</h3>
+
+    <h4>People Who Owe Me</h4>
+    <div id="receivableList"></div>
+
+    <h4>People I Owe</h4>
+    <div id="payableList"></div>
+</section>
+<nav>
+  <button onclick="showScreen('home')">🏠<br>Home</button>
+  <button onclick="showScreen('add')">➕<br>Add</button>
+  <button onclick="showScreen('history')">📜<br>History</button>
+  <button onclick="showScreen('contacts')">👥<br>Contacts</button>
+  <button onclick="showScreen('outstanding')">📊<br>Dues</button>
+</nav>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
