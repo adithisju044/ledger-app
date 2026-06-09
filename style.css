@@ -122,24 +122,6 @@ nav button {
     font-size: 18px;
     margin-bottom: 8px;
 }
-function editTransaction(id) {
-  let transaction = transactions.find(t => t.id === id);
-
-  if (!transaction) {
-    alert("Transaction not found");
-    return;
-  }
-
-  editId = id;
-
-  document.getElementById("date").value = transaction.date;
-  document.getElementById("type").value = transaction.type;
-  document.getElementById("amount").value = transaction.amount;
-  document.getElementById("paymentMode").value = transaction.paymentMode;
-  document.getElementById("notes").value = transaction.notes;
-
-  document.getElementById("personSelect").value = transaction.person;
-  document.getElementById("newPerson").value = "";
-
-  showScreen("add");
+#restoreFile {
+    display: none;
 }

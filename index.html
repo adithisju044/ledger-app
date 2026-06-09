@@ -3,6 +3,7 @@
 <head>
   <title>My Ledger App</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -19,7 +20,13 @@
       <p>Net Balance</p>
       <h1 id="netBalance">₹0</h1>
     </div>
+<button onclick="backupData()">⬇ Backup Data</button>
 
+<input type="file" id="restoreFile" accept=".json" onchange="restoreData(event)">
+
+<button onclick="document.getElementById('restoreFile').click()">
+    ⬆ Restore Data
+</button>
     <div class="summary-row">
       <div>
         <p>Total Credit</p>
@@ -46,7 +53,7 @@
     </select>
 
     <input type="number" id="amount" placeholder="Amount">
-
+    <input type="date" id="dueDate">
     <select id="personSelect">
       <option value="">Select contact</option>
     </select>
@@ -71,6 +78,7 @@
 
   <section id="history" class="screen">
     <h3>History</h3>
+    <button onclick="downloadCSV()">Download Ledger CSV</button>
     <input type="text" id="search" placeholder="Search person..." onkeyup="displayTransactions()">
     <div id="transactionList"></div>
   </section>
@@ -102,7 +110,7 @@
   <button onclick="showScreen('contacts')">← Back</button>
 
   <h3 id="ledgerPersonName">Person Ledger</h3>
-
+  <button onclick="exportPersonPDF()">📄 Export PDF Statement</button>
   <div class="summary-row">
     <div>
       <p>Total Credit</p>

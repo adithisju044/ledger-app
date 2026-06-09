@@ -76,6 +76,7 @@ function addTransaction() {
   let date = document.getElementById("date").value;
   let type = document.getElementById("type").value;
   let amount = Number(document.getElementById("amount").value);
+  let dueDate = document.getElementById("dueDate").value;
   let selectedPerson = document.getElementById("personSelect").value;
   let newPerson = document.getElementById("newPerson").value.trim();
   let paymentMode = document.getElementById("paymentMode").value;
@@ -106,6 +107,7 @@ function addTransaction() {
       type,
       amount,
       person,
+      dueDate,
       paymentMode,
       notes
     });
@@ -120,6 +122,7 @@ function addTransaction() {
           type,
           amount,
           person,
+          dueDate,
           paymentMode,
           notes
         };
@@ -165,7 +168,9 @@ function displayTransactions() {
         <div class="${t.type.toLowerCase()}">
           ${t.type} ₹${t.amount}
         </div>
-        <div class="small">${t.date} | ${t.paymentMode}</div>
+        <div class="small">
+         ${t.date} | Due: ${t.dueDate || "Not Set"} | ${t.paymentMode}
+        </div>
         <div class="small">${t.notes}</div>
         <button onclick="editTransaction(${t.id})">✏️ Edit</button>
         <button onclick="deleteTransaction(${t.id})">🗑 Delete</button>
@@ -378,4 +383,153 @@ function editTransaction(id) {
   document.getElementById("newPerson").value = "";
 
   showScreen("add");
+}
+function downloadCSV() {
+  let csv = "Date,Person,Type,Amount,Payment Mode,Notes\n";
+
+  transactions.forEach(t => {
+    csv += `${t.date},${t.person},${t.type},${t.amount},${t.paymentMode},${t.notes}\n`;
+  });
+
+  let blob = new Blob([csv], { type: "text/csv" });
+  let url = URL.createObjectURL(blob);
+
+  let a = document.createElement("a");
+  a.href = url;
+  a.download = "ledger.csv";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+function backupData() {
+  const data = {
+    contacts: contacts,
+    transactions: transactions
+  };
+
+  const jsonData = JSON.stringify(data, null, 2);
+
+  const blob = new Blob([jsonData], {
+    type: "application/json"
+  });
+
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "ledger-backup.json";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+function restoreData(event) {
+  const file = event.target.files[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+
+      contacts = data.contacts || [];
+      transactions = data.transactions || [];
+
+      saveData();
+
+      loadContacts();
+      displayContacts();
+      displayTransactions();
+      displayRecentTransactions();
+      displayOutstanding();
+      updateSummary();
+
+      alert("Backup restored successfully");
+    }
+    catch(error) {
+      alert("Invalid backup file");
+    }
+  };
+
+  reader.readAsText(file);
+}
+function exportPersonPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  let personName = document.getElementById("ledgerPersonName").innerText;
+  let contact = contacts.find(c => c.name === personName);
+
+  if (!contact) {
+    alert("Contact not found");
+    return;
+  }
+
+  let openingCredit = Number(contact.openingCredit) || 0;
+  let openingDebit = Number(contact.openingDebit) || 0;
+
+  let personTransactions = transactions.filter(t => t.person === personName);
+
+  let transactionCredit = 0;
+  let transactionDebit = 0;
+
+  personTransactions.forEach(t => {
+    if (t.type === "Credit") transactionCredit += t.amount;
+    else transactionDebit += t.amount;
+  });
+
+  let currentBalance =
+    openingCredit - openingDebit + transactionCredit - transactionDebit;
+
+  doc.setFontSize(18);
+  doc.text("LEDGER STATEMENT", 70, 15);
+
+  doc.setFontSize(12);
+  doc.text(`Person: ${contact.name}`, 15, 30);
+  doc.text(`Phone: ${contact.phone || "N/A"}`, 15, 38);
+  doc.text(`Contact Type: ${contact.contactType || "Other"}`, 15, 46);
+
+  doc.text(`Opening Credit: Rs. ${openingCredit}`, 15, 60);
+  doc.text(`Opening Debit: Rs. ${openingDebit}`, 15, 68);
+
+  doc.text("Transactions", 15, 82);
+
+  let y = 92;
+
+  doc.text("Date", 15, y);
+  doc.text("Type", 55, y);
+  doc.text("Amount", 95, y);
+  doc.text("Mode", 135, y);
+
+  y += 8;
+
+  personTransactions.forEach(t => {
+    if (y > 275) {
+      doc.addPage();
+      y = 20;
+    }
+
+    doc.text(t.date, 15, y);
+    doc.text(t.type, 55, y);
+    doc.text("Rs. " + t.amount, 95, y);
+    doc.text(t.paymentMode, 135, y);
+
+    y += 8;
+  });
+
+  y += 8;
+
+  if (y > 260) {
+    doc.addPage();
+    y = 20;
+  }
+
+  doc.text(`Transaction Credit: Rs. ${transactionCredit}`, 15, y);
+  y += 8;
+  doc.text(`Transaction Debit: Rs. ${transactionDebit}`, 15, y);
+  y += 8;
+  doc.text(`Current Balance: Rs. ${currentBalance}`, 15, y);
+
+  doc.save(`${personName}-ledger-statement.pdf`);
 }
