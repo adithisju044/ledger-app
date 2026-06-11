@@ -2,6 +2,8 @@
 <html>
 <head>
   <title>My Ledger App</title>
+  <meta name="theme-color" content="#2563eb">
+  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -150,5 +152,16 @@
 </div>
 
 <script src="script.js"></script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./service-worker.js")
+    .then(() => {
+      console.log("Service Worker Registered");
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}
+</script>
 </body>
 </html>
